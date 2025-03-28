@@ -9,17 +9,38 @@ import {
   Menu, 
   X,
   PlusCircle,
-  Gift
+  Gift,
+  LogIn,
+  LogOut
 } from "lucide-react";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuth } from "@/context/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { user, isAuthenticated, login, logout } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogin = async () => {
+    await login("google");
+  };
+
+  const handleLogout = async () => {
+    await logout();
   };
 
   return (
@@ -64,14 +85,40 @@ const Navbar = () => {
             <Button variant="ghost" size="icon" aria-label="Cart">
               <ShoppingCart className="w-5 h-5 text-remedidarkgray" />
             </Button>
-            <Link to="/profile">
-              <Button variant="ghost" size="icon" aria-label="Profile">
-                <User className="w-5 h-5 text-remedidarkgray" />
+            
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full" aria-label="Profile">
+                    <Avatar>
+                      <AvatarImage src={user?.photoURL} />
+                      <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="cursor-pointer w-full">Profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile/listings" className="cursor-pointer w-full">My Listings</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile/donations" className="cursor-pointer w-full">My Donations</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" /> Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button className="bg-remediteal hover:bg-opacity-90 text-white rounded-md" onClick={handleLogin}>
+                <LogIn className="mr-2 h-4 w-4" /> Sign In
               </Button>
-            </Link>
-            <Button className="bg-remediteal hover:bg-opacity-90 text-white rounded-md" asChild>
-              <Link to="/login">Sign In</Link>
-            </Button>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -118,16 +165,27 @@ const Navbar = () => {
               <Button variant="ghost" size="icon" aria-label="Cart">
                 <ShoppingCart className="w-5 h-5 text-remedidarkgray" />
               </Button>
-              <Link to="/profile">
-                <Button variant="ghost" size="icon" aria-label="Profile">
-                  <User className="w-5 h-5 text-remedidarkgray" />
-                </Button>
-              </Link>
+              {isAuthenticated ? (
+                <Link to="/profile">
+                  <Button variant="ghost" size="icon" aria-label="Profile">
+                    <Avatar>
+                      <AvatarImage src={user?.photoURL} />
+                      <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </Link>
+              ) : null}
             </div>
             <div className="px-4 pt-2">
-              <Button className="w-full bg-remediteal hover:bg-opacity-90 text-white rounded-md" asChild>
-                <Link to="/login">Sign In</Link>
-              </Button>
+              {isAuthenticated ? (
+                <Button className="w-full bg-remediteal hover:bg-opacity-90 text-white rounded-md" onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" /> Sign Out
+                </Button>
+              ) : (
+                <Button className="w-full bg-remediteal hover:bg-opacity-90 text-white rounded-md" onClick={handleLogin}>
+                  <LogIn className="mr-2 h-4 w-4" /> Sign In
+                </Button>
+              )}
             </div>
           </div>
         )}
