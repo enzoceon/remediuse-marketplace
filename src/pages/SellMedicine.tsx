@@ -232,7 +232,12 @@ const SellMedicine = () => {
                                   type="button"
                                   variant="outline"
                                   className="cursor-pointer"
-                                  onClick={() => document.getElementById("image-upload")?.click()}
+                                  onClick={() => {
+                                    const uploadElement = document.getElementById("image-upload");
+                                    if (uploadElement) {
+                                      uploadElement.click();
+                                    }
+                                  }}
                                 >
                                   Upload Image
                                 </Button>
@@ -278,7 +283,12 @@ const SellMedicine = () => {
                                   type="button"
                                   variant="outline"
                                   className="cursor-pointer"
-                                  onClick={() => document.getElementById("document-upload")?.click()}
+                                  onClick={() => {
+                                    const uploadElement = document.getElementById("document-upload");
+                                    if (uploadElement) {
+                                      uploadElement.click();
+                                    }
+                                  }}
                                 >
                                   Upload Document
                                 </Button>
