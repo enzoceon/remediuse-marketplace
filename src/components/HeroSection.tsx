@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Search, ArrowRight } from "lucide-react";
+import { Search, ArrowRight, ShoppingCart, Gift } from "lucide-react";
 
 const HeroSection = () => {
   return (
